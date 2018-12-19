@@ -1,0 +1,18 @@
+label start
+set 脚本延时,100
+set 断线重登,1
+set 出错重启,1
+set 自动解锁,1
+log 1
+waitmap 2006,2000,-3 
+walkpos 19,18
+'收dp主号所在位置
+walkpos 15,14
+w C
+set 名片,1
+delay 2000
+check 重登,成功,start
+ifitem DP支票,<=,0,-2
+useitem DP支票
+goto -4
+

@@ -1,0 +1,144 @@
+label begin
+set 脚本延时,100
+set 自动解锁,1
+set 断线重登,1
+set 出错重启,1
+set 吃补血肉,1
+set 丢非血肉,1
+say 骑宠放第1位，战宠放第2位，左饰(右上)放奥萝拉精灵
+set 锁定骑宠,1
+set 锁定战宠,2
+set 嗜血补气,25%
+set 丢弃中为,粉|豆|爪
+set 人物首次,左饰精灵
+set 战宠首次,Q雷乱抽
+set 人物一般,衣服精灵
+set 战宠一般,Q雷乱抽
+label start
+log 1
+waitmap 2000,2000,-1
+say 欢迎使用小子制做全自动挂声望脱机脚本--小子脱机外挂，QQ:1515149834
+check 人物,hp%,<,70,call 补血
+check 人物,魅力,<,80,call 补魅力
+check 宠物,1,hp%,<,70,call 补血
+check 宠物,2,hp%,<,70,call 补血
+check 宠物,1,忠诚,<,60,call 补忠诚
+check 宠物,2,忠诚,<,60,call 补忠诚
+goto 去挂声望
+end
+'--------------------------------------
+label 补血
+log 1
+waitmap 2000,2000,-1
+walkpos 62,58
+walkpos 60,61
+walkpos 61,64
+walkpos 61,68 
+walkpos 61,72 
+walkpos 60,78 
+walkpos 60,82 
+walkpos 61,83 
+walkpos 65,82
+eo
+delay 1000
+check 坐标,!=,65,82,补血
+chmap 66,82
+waitmap 2005,2000,-3
+walkpos 12,14 
+walkpos 11,9 
+delay 500
+w A
+say 补血
+waitsay 已经全部回复,*,2000,-2
+log 1
+waitmap 2000,2000,-1
+return
+'--------------------------------------------
+label 补忠诚
+log 1
+waitmap 2000,2000,-1
+walkpos 61,59
+walkpos 60,62
+walkpos 62,64
+walkpos 65,65
+walkpos 67,63
+eo
+delay 1000
+check 坐标,!=,67,63,补忠诚
+w A
+buy 忠诚之心|4
+delay 1000
+ifitem 忠诚之心,<,4,-3
+useitem 忠诚之心,1
+delay 200
+check 宠物,1,忠诚,<,100,-2
+useitem 忠诚之心,2
+delay 200
+ifitem 忠诚之心,>,0,-2
+log 1
+waitmap 2000,2000,-1
+return
+'---------------------------------------------
+label 补魅力
+log 1
+waitmap 2000,2000,-1
+walkpos 62,58
+walkpos 60,61
+walkpos 61,64
+walkpos 61,68 
+walkpos 61,69 
+walkpos 62,75 
+walkpos 59,79 
+walkpos 57,82 
+eo
+delay 1000
+check 坐标,!=,57,82,补魅力
+w G
+buy 魅力橘子|2
+delay 1000
+ifitem 魅力橘子,<,2,-3
+useitem 魅力橘子
+delay 200
+ifitem 魅力橘子,>,0,-2
+log 1
+waitmap 2000,2000,-1
+return
+'----------------------------
+label 使用恶魔
+cls
+useitem 恶魔宝石
+delay 1000
+waitsay 充满了杀气,系统,2000,-2
+return
+'------------------------------
+label 去挂声望
+log 1
+waitmap 2000,2000,-1
+walkpos 62,58
+walkpos 60,56
+walkpos 62,53
+walkpos 64,53
+w 东
+trans 冰封通道
+waitmap 8112,3000,去挂声望
+walkpos 43,51
+fightpet 2
+set 自动逃跑,0
+call 使用恶魔
+delay 3000
+say 欢迎使用小子制做全自动挂声望脱机脚本--小子脱机外挂，QQ:1515149834
+ifmap 2000,start
+check 人物,魅力,<,60,start
+check 宠物,1,忠诚,<,50,start
+check 宠物,2,忠诚,<,50,start
+check 重登,成功,begin
+ifitem 声望卷,>,0,call 吃声望卷
+goto -8
+'---------------------
+label 吃声望卷
+useitem 声望
+delay 500
+ifitem 声望卷,>,0,-2
+return
+
+
