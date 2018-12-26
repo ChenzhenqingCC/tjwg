@@ -68,4 +68,5 @@ public:
 	afx_msg void OnBnClickedSave();
 	afx_msg void OnNMDblclkListchar(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnBnClickedChkupdate();
+	afx_msg void OnLvnItemchangedList2(NMHDR *pNMHDR, LRESULT *pResult);
 };

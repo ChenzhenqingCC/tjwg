@@ -9,6 +9,7 @@ typedef struct{
 	char charname[30];
 	char password[30];
 	char safecode[30];
+	char charidx[30];
 	int index;			//第几个帐号
 	char scriptName[100];//脚本文件名
 }USERINFO;

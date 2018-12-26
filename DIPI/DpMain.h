@@ -761,7 +761,7 @@ public:
 	CCriticalSection csLocalSingal;		//信号量
 	int scriptNum;						//脚本行数
 	CString *script;					//保存脚本
-	CMap<CString,LPCTSTR,int,int> intvar;//脚本变量字典
+	CMap<CString,LPCTSTR, CString, LPCTSTR> intvar;//脚本变量字典
 	USERINFO user;						//帐号信息
 	CHARLIST charlist[2];				//人物列表
 	NPC_INFO npcinfo[STATIC_NPC_NUM];				//npc信息,包括人物动态信息

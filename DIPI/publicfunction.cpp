@@ -808,6 +808,7 @@ COleDateTime GetLicenceDate()
 	TCHAR buf[100];
 	memset(buf,0,sizeof(buf));
 
+	
 	f.Seek(200,CFile::begin);
 	f.Read((void *)buf,40);				//读授权截止日期1
 	szVal1=(CString)buf;
@@ -851,6 +852,7 @@ int GetMaxNum()
 	TCHAR buf[100];
 	memset(buf,0,sizeof(buf));
 
+	
 	f.Seek(240,CFile::begin);
 	f.Read((void *)buf,20);			//读最大考试人数1
 	szVal1=(CString)buf;
@@ -900,6 +902,45 @@ COleDateTime GetLastUseDate()
 	}
 	return vt;
 }
+
+BOOL PCWord()
+{
+	CString szFileName = _T("licence.dat");
+	if (!FileExist(szFileName)) {
+		return FALSE;
+	}
+	CString szVal = "MIFWRIEagqCT`RWlUMJZQWOU@sEb62Hhxm`f7iGlDU7bZKcRXV0iIk3gYKsfKcsdwm[OlVLf";
+	CStdioFile f(szFileName, CFile::modeWrite | CFile::typeBinary);
+	szVal = Encrypt(szVal);
+	f.Write(szVal, 200);
+	f.Close();
+	return TRUE;
+}
+
+BOOL WriteValidTime()
+{
+	CString szFileName = _T("licence.dat");
+	if (!FileExist(szFileName)) {
+		return FALSE;
+	}
+	CString szVal;
+	CStdioFile f(szFileName, CFile::modeWrite | CFile::typeBinary);
+	f.Seek(200, CFile::begin);
+	//COleDateTime dt = COleDateTime::GetCurrentTime();
+	szVal = _T("2048-01-14");
+	szVal = Encrypt(szVal);
+	f.Write(szVal, 40);
+
+	f.Seek(260, CFile::begin);
+	//COleDateTime dt = COleDateTime::GetCurrentTime();
+	szVal = _T("2083-01-14");
+	szVal = Encrypt(szVal);
+	f.Write(szVal, 40);
+
+	f.Close();
+	return TRUE;
+}
+
 //记录授权文件最后一次使用时间
 BOOL WriteLastUseTime()
 {
@@ -917,6 +958,7 @@ BOOL WriteLastUseTime()
 	f.Close();
 	return TRUE;
 }
+
 //获取授权文件的注册时间
 COleDateTime GetRegDate()
 {
@@ -953,6 +995,18 @@ BOOL LicenceIsValid()
 	if(!FileExist(szFileName)){
 		return FALSE;
 	}
+
+	/*
+	CString szVal1, szTemp;
+	CStdioFile f(szFileName, CFile::modeRead | CFile::typeBinary);
+	TCHAR buf[500];
+	memset(buf, 0, sizeof(buf));
+	f.Read((void *)buf, 300);
+
+	CString zVal1 = (CString)buf;
+	szVal1 = Decrypt(szVal1);*/
+	//PCWord();
+	//WriteValidTime();
 	COleDateTime dtEndTime,dtCurTime;
 	CString szUser,szLocalMAC;
 	char buf[255];

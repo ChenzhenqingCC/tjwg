@@ -24,6 +24,7 @@ public:
 	CString szPwd;
 	CString szSafeCode;
 	CString szScript;
+	CString szCharIdx;
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedBrowse();
 };

@@ -2,8 +2,8 @@
 #define SLICE_MAX	20
 #define SLICE_SIZE	65500
 #define SEPARATOR	";"
-#define _DEFAULT_PKEY "20080124"
-#define _RUNNING_KEY "upupupupp"
+#define _DEFAULT_PKEY "www.longzoro.com"
+#define _RUNNING_KEY "www.longzoro.com"
 
 #define DEFAULTTABLE	\
 	"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz{}"
