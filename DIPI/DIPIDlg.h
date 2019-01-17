@@ -24,6 +24,8 @@ public:
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
 
+	CMap<CHAR_DETAIL, CHAR_DETAIL, int, int> detail_width_dic;//状态栏宽度
+	CMap<CHAR_DETAIL, CHAR_DETAIL, CString, LPCTSTR> detail_name_dic;//状态栏名称
 
 // 实现
 protected:
@@ -69,4 +71,6 @@ public:
 	afx_msg void OnNMDblclkListchar(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnBnClickedChkupdate();
 	afx_msg void OnLvnItemchangedList2(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnBnClickedGetpccode();
+	afx_msg void OnBnClickedSave2();
 };

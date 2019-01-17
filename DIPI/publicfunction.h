@@ -32,8 +32,47 @@ enum{
 	NOTIFY_STOPSCRIPT,
 	NOTIFY_GAMESTATE,
 	NOTIFY_ROUND,
-	NOTIFY_FAME
+	NOTIFY_FAME,
+	NOTIFY_FIGHTPET,
+	NOTIFY_RIDEPET,
+	NOTIFY_TEAMSUM,
 };
+
+//状态栏类型
+enum CHAR_DETAIL
+{
+	DETAIL_NAME,
+	DETAIL_SCRIPT,
+	DETAIL_FIGHTPETEXP,
+	DETAIL_RIDEPETEXP,
+	DETAIL_LEVEL,
+	DETAIL_EXP,
+	DETAIL_NEXTEXP,
+	DETAIL_HP,
+	DETAIL_MP,
+	DETAIL_ATK,
+	DETAIL_DEF,
+	DETAIL_MIN,
+	DETAIL_MEI,
+	DETAIL_ZHUAN,
+	DETAIL_SHU,
+	DETAIL_TI,
+	DETAIL_WAN,
+	DETAIL_NAI,
+	DETAIL_SU,
+	DETAIL_DP,
+	DETAIL_CASH,
+	DETAIL_SHENG,
+	DETAIL_LVPOINT,
+	DETAIL_MAP,
+	DETAIL_MAPNAME,
+	DETAIL_POS,
+	DETAIL_STATE,
+	DETAIL_ROUND,
+	DETAIL_TEAMSUM,
+	DETAIL_ALL
+};
+
 //回调消息结构
 typedef struct{
 	UINT nNotityType;		//信息类型，见上面的枚举定义
@@ -78,6 +117,7 @@ int myatoi(CString src);
 CString GetDigitFormString(CString str);
 //获取网卡物理地址，多个用|来分隔
 BOOL GetNicInfo(char *dst);
+CString GetFirstNicInfo();
 //授权检测函数
 CString GetUser();
 COleDateTime GetLicenceDate();
@@ -85,4 +125,13 @@ COleDateTime GetLastUseDate();
 COleDateTime GetRegDate();
 int GetMaxNum();
 BOOL WriteLastUseTime();
-BOOL LicenceIsValid();
+int LicenceIsValid();
+BOOL SelfLicenceValid();
+CString EncryptNew(CString s);
+int SplitString(const CString str, char split, CStringArray &strArray);
+
+static int en_key[] = { 4, 9, 6, 2, 8, 7, 3 };
+
+static CString licence_name = "licence.dat";
+static CString licence_self = "licence_czq8678.dat";
+

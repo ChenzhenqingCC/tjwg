@@ -19,6 +19,18 @@ int GetScriptLinsNum(char *path)
 	else
 		return -1;
 }
+
+CString EncryptNew(CString s)
+{
+	CString v = "";
+	for (int i = 0; i < s.GetLength(); i++) {
+		TCHAR bTemp = (TCHAR)s.GetAt(i);
+		bTemp = (TCHAR)(bTemp ^ i);
+		v +=CString(bTemp);
+	}
+	return v;
+}
+
 //加密函数
 CString Encrypt(CString s)
 {
@@ -69,6 +81,7 @@ CString Encrypt(CString s)
 	}
 	return v;
 }
+
 //解密函数
 CString Decrypt(CString s)
 {
@@ -747,6 +760,18 @@ CString GetDigitFormString(CString str)
 	}
 	return str.Right(n-i);
 }
+
+CString GetFirstNicInfo()
+{
+	char buf[1024] = { 0 };
+	if (GetNicInfo(buf)) {
+		int pos = 0;
+		CString szVal = buf;
+		return szVal.Tokenize("|", pos);
+	}
+	return "";
+}
+
 BOOL GetNicInfo(char *dst)
 {
 	char buf[50];
@@ -784,7 +809,7 @@ BOOL GetNicInfo(char *dst)
 //获取给谁授权
 CString GetUser()
 {
-	CString szFileName=_T("licence.dat");
+	CString szFileName=_T("licence_o.dat");
 	if(!FileExist(szFileName)){
 		return _T("");
 	}
@@ -799,7 +824,7 @@ CString GetUser()
 COleDateTime GetLicenceDate()
 {
 	COleDateTime ret(1970,1,1,0,0,0);
-	CString szFileName=_T("licence.dat");
+	CString szFileName=_T("licence_o.dat");
 	if(!FileExist(szFileName)){
 		return ret;
 	}
@@ -843,7 +868,7 @@ COleDateTime GetLicenceDate()
 //获取最大帐号数
 int GetMaxNum()
 {
-	CString szFileName=_T("licence.dat");
+	CString szFileName=_T("licence_o.dat");
 	if(!FileExist(szFileName)){
 		return 3;
 	}
@@ -877,7 +902,7 @@ int GetMaxNum()
 COleDateTime GetLastUseDate()
 {
 	COleDateTime ret(1970,1,1,0,0,0);
-	CString szFileName=_T("licence.dat");
+	CString szFileName=_T("licence_o.dat");
 	if(!FileExist(szFileName)){
 		return ret;
 	}
@@ -905,7 +930,7 @@ COleDateTime GetLastUseDate()
 
 BOOL PCWord()
 {
-	CString szFileName = _T("licence.dat");
+	CString szFileName = _T("licence_o.dat");
 	if (!FileExist(szFileName)) {
 		return FALSE;
 	}
@@ -919,7 +944,7 @@ BOOL PCWord()
 
 BOOL WriteValidTime()
 {
-	CString szFileName = _T("licence.dat");
+	CString szFileName = _T("licence_o.dat");
 	if (!FileExist(szFileName)) {
 		return FALSE;
 	}
@@ -988,38 +1013,72 @@ COleDateTime GetRegDate()
 	}
 	return vt;
 }
-//测试授权文件是否有效
-BOOL LicenceIsValid()
+BOOL SelfLicenceValid()
 {
-	CString szFileName=_T("licence.dat");
-	if(!FileExist(szFileName)){
-		return FALSE;
+	return FileExist(licence_self);
+}
+//测试授权文件是否有效
+int LicenceIsValid()
+{
+	if (SelfLicenceValid())
+		return 100;
+	if(!FileExist(licence_name)){
+		return 0;
 	}
 
-	/*
-	CString szVal1, szTemp;
-	CStdioFile f(szFileName, CFile::modeRead | CFile::typeBinary);
-	TCHAR buf[500];
-	memset(buf, 0, sizeof(buf));
-	f.Read((void *)buf, 300);
-
-	CString zVal1 = (CString)buf;
-	szVal1 = Decrypt(szVal1);*/
-	//PCWord();
-	//WriteValidTime();
-	COleDateTime dtEndTime,dtCurTime;
-	CString szUser,szLocalMAC;
-	char buf[255];
-	szUser=GetUser();
-	if(szUser.IsEmpty())
-		return FALSE;
-	if(!GetNicInfo(buf))
-		return FALSE;
-	szLocalMAC=(CString)buf;
-	dtEndTime=GetLicenceDate();	
-	dtCurTime=COleDateTime::GetCurrentTime();
-	if((dtCurTime<=dtEndTime && szLocalMAC.Find(szUser)>=0) || szUser.CompareNoCase("unlimited")==0)
-		return TRUE;
+	CString szVal;
+	CStdioFile ff(licence_name, CFile::modeRead | CFile::typeText);
+	ff.ReadString(szVal);
+	ff.Close();
+	CString src_str = EncryptNew(szVal);
+	CStringArray csa;
+	int sp_num = SplitString(src_str, '#', csa);
+	if (sp_num != 3)
+	{
+		return 0;
+	}
 	else
-		return FALSE;
+	{
+		CString szUser = csa.GetAt(0);
+		char buf[255];
+		if (!GetNicInfo(buf))
+			return 0;
+		CString szLocalMAC = (CString)buf;
+
+		CString vtime = csa.GetAt(1);
+		COleDateTime dtEndTime;
+		dtEndTime.ParseDateTime(vtime);
+		COleDateTime dtCurTime = COleDateTime::GetCurrentTime();
+		if ((dtCurTime <= dtEndTime && szLocalMAC.Find(szUser) >= 0))
+		{
+			int max_num = atoi(csa.GetAt(2));
+			return max_num;
+		}
+		else
+			return 0;
+	}
+}
+
+
+int SplitString(const CString str, char split, CStringArray &strArray)
+{
+	strArray.RemoveAll();
+	CString strTemp = str;
+	int iIndex = 0;
+	while (1)
+	{
+		iIndex = strTemp.Find(split);
+		if (iIndex >= 0)
+		{
+			strArray.Add(strTemp.Left(iIndex));
+			strTemp = strTemp.Right(strTemp.GetLength() - iIndex - 1);
+		}
+		else
+		{
+			break;
+		}
+	}
+	strArray.Add(strTemp);
+
+	return strArray.GetSize();
 }

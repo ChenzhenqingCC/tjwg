@@ -50,19 +50,25 @@ BOOL CDIPIApp::InitInstance()
 	InitCommonControlsEx(&InitCtrls);
 	
 	CWinApp::InitInstance();
-	//检测软件是否授权
-	if(LicenceIsValid()){
-		WriteLastUseTime();
-		MAXACCOUNT=GetMaxNum();
-		G_LICENCEDATE=GetLicenceDate();
+
+	if (SelfLicenceValid())
+	{
+		MAXACCOUNT = 100;
 	}
-	else{		
-		MAXACCOUNT=6;
-		//只运行一个服务端实例
-		if(FindWindow(NULL,"螺丝石器外挂")!=NULL){
-			MessageBox(NULL,"外挂未注册，只能运行一个程序实例!注册请与作者QQ:1515149834联系！","提示信息",MB_ICONINFORMATION );
+	else
+	{
+		if (FindWindow(NULL, "公益脱机外挂") != NULL) {
+			MessageBox(NULL, "外挂只能运行一个程序实例!授权请与作者联系！", "提示信息", MB_ICONINFORMATION);
 			exit(0);
 		}
+	}
+	
+
+	MAXACCOUNT = LicenceIsValid();
+	//检测软件是否授权
+	if(MAXACCOUNT <= 0){		
+		//只运行一个服务端实例
+		MessageBox(NULL, "外挂未授权,请点击获取机器码后发给作者获取授权", "提示信息", MB_ICONINFORMATION);
 	}
 	if (!AfxSocketInit())
 	{

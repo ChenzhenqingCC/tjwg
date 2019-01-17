@@ -585,6 +585,7 @@ typedef struct{
 	int direction;	//人物方向
 	int state;		//游戏状态，-1登出，0平时，1战斗
 	int round;		//战斗回合数
+	int is_walking;
 }CHAROTHERINFO;
 typedef struct{
 	int whotalk;
@@ -820,6 +821,11 @@ public:
 	BOOL bDuel;						//决斗
 	BOOL bCallingCard;				//名片
 	BOOL bTrade;					//交易
+	BOOL bEncount;					//是否原地遇敌
+	BOOL bFightAndRide;				//是否战骑一体
+	DWORD nRideCheckTime;				//战骑延时检查
+	int nEncountDelay;				//原地延时
+	DWORD nEncountTime;				//上次原地遇敌的时间
 	char cZDAttack[10][50];			//指定攻击的宠物
 	int nZDAttackNum;				//指定攻击的宠物的宠物数量
 	char cLockAttack[10][50];		//锁定攻击的宠物
@@ -845,17 +851,23 @@ public:
 	double dAttackDelay;			//攻击延迟
 	double dRMpByBlood;				//嗜血补气
 	char cCharFirstAction[50];		//人物首次动作
+	int cCharFirstNum;				//人物首次限制数量
 	char cCharAction[50];			//人物一般动作
 	char cPetFirstAction[50];		//战宠首次动作
 	char cPetAction[50];			//战宠一般动作
 	int nCapLevel;					//捕捉等级
 	char cCapPetName[5][50];		//捉宠名称
+	char cCapOnePetName[50];		//捉单个宠名称
 	int nCapPetNum;					//和捉宠名称配合使用，捉宠数量
 	int nCapPetBlood;				//捉宠血量
 	int nCapCharUseSkill;			//捉宠时人物的技能和捉宠血量
 	int nCapPetSkill;				//捉宠时宠物使用的技能
+	int nPartyNum;					//队伍人数
 	BOOL bCapEscapeWhenNoPet;		//是否逃跑当没有要捕获的宠物时
-	RECRUITBLOOD recruitblood;		//保存人物精灵补血设置(包括战时和平时)
+	RECRUITBLOOD recruitblood;		//人物战时精灵补血设置
+	RECRUITBLOOD commonblood;		//人物平时精灵补血设置
+	RECRUITBLOOD recruitblood_pet;		//宠物战时精灵补血设置
+	RECRUITBLOOD commonblood_pet;		//宠物平时精灵补血设置
 	PETRECRUITBLOOD petrecruitblood;		//宠物技能补血
 	BOOL bDeleteChar;				//重登时是否删除帐号
 
@@ -894,6 +906,7 @@ public:
 	void func32(char *message);
 	//发送指令函数
 	int SendOnlineInfo(char *info);
+	int SendEICommand();
 	int SendEOCommand();
 	int SendMenuFlag(int flg);
 	int SendLogFlag(int flg);
@@ -905,6 +918,7 @@ public:
 	int SendDiscardPet(int pet);		
 	int SendWalkPos(int x,int y,char *direction);
 	int SendWalkDirection(int x,int y,char *direction);
+	int SendJoinParty(int x, int y, int request);
 	int SendTalk(int x,int y,char *msg,int color,int area);
 	int SendSelectWindowButton(int x,int y,int seqno,int objindex,int select,char *data);
 
@@ -945,6 +959,7 @@ public:
 	int CalcWalkPos(WALKARRAY *walk,int xstart,int ystart,int xend,int yend);
 	void CalcCharPosition(WALKARRAY *walk);
 	void ParseSetPara(CString &data);
+	void JoinParty(CString &data);
 	BOOL BaiTan(CString para);
 	BOOL BuyFromBaiTan(CString para);
 	BOOL UseItem(CString item);
@@ -970,7 +985,7 @@ public:
 	BOOL CharTrans(CString para);
 	BOOL If_Check(CString para);
 	BOOL Let_Set(CString para);
-	void GetValue(CString &key,int &val);
+	CString GetValue(CString &key,int &val);
 	BOOL WaitSay(CString para);
 	BOOL WaitDlg(CString para);
 	void Button(CString para);	
@@ -995,6 +1010,9 @@ public:
 	BOOL IfPetIndexName(CString szPet,CString szTest,CString szPara,CString szJump);
 	BOOL IfPetIndexPosEmpty(CString szPet,CString szTest,CString szPara,CString szJump);
 	BOOL CheckChar(CString szPara);
+	BOOL CheckParty(CString szPara);
+	BOOL CheckOwnTitle(CString szTest, CString szCamp, int jump, BOOL iscall);
+	BOOL CheckPartyNum(CString szTest, int num, int jump, BOOL iscall);
 	BOOL CheckCharLV(CString szTest,int num,int jump,BOOL iscall);
 	BOOL CheckCharEXP(CString szTest,int num,int jump,BOOL iscall);
 	BOOL CheckCharHP(CString szTest,int num,int jump,BOOL iscall);
