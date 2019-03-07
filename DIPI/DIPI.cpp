@@ -65,6 +65,7 @@ BOOL CDIPIApp::InitInstance()
 	
 
 	MAXACCOUNT = LicenceIsValid();
+	G_LICENCEDATE = GetLicenceDate();
 	//检测软件是否授权
 	if(MAXACCOUNT <= 0){		
 		//只运行一个服务端实例
@@ -81,7 +82,7 @@ BOOL CDIPIApp::InitInstance()
 
 	// 创建 shell 管理器，以防对话框包含
 	// 任何 shell 树视图控件或 shell 列表视图控件。
-	CShellManager *pShellManager = new CShellManager;
+	//CShellManager *pShellManager = new CShellManager;
 
 	// 标准初始化
 	// 如果未使用这些功能并希望减小
@@ -107,10 +108,10 @@ BOOL CDIPIApp::InitInstance()
 	}
 
 	// 删除上面创建的 shell 管理器。
-	if (pShellManager != NULL)
-	{
-		delete pShellManager;
-	}
+	// (pShellManager != NULL)
+	//{
+		//delete pShellManager;
+	//}
 
 	// 由于对话框已关闭，所以将返回 FALSE 以便退出应用程序，
 	//  而不是启动应用程序的消息泵。

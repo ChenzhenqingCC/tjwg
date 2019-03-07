@@ -752,17 +752,33 @@ typedef struct{
 	int num;			//物品数量，宠物没有此项
 	int pos;			//售卖菜单中的位置
 }BUY_BAITAN;
+
+//脚本结构
+typedef struct {
+	CString file_path;					//脚本路径
+	CMap<CString, LPCTSTR, CString, LPCTSTR> mintvar;//脚本变量字典
+	int IP;								//指令计数器
+	int ErrorLine;						//脚本错误指针
+	stack <int> mIPStack;				//指令堆栈
+}SCRPIT_ST;
+
 class CDpMain
 {
 public:
 	CDpMain(void);
 	~CDpMain(void);
 	SOCKET socket;
-	
 	CCriticalSection csLocalSingal;		//信号量
+	SCRPIT_ST script_statck[20];				//脚本栈
+	int cur_script_idx = 0;
+	//stack<SCRPIT_ST *> script_statck;		//脚本栈
+	//SCRPIT_ST * current_sc;				//当前脚本指针
 	int scriptNum;						//脚本行数
-	CString *script;					//保存脚本
-	CMap<CString,LPCTSTR, CString, LPCTSTR> intvar;//脚本变量字典
+	CString cur_sc_path;					//脚本路径
+	CString cur_sc_name;
+	CArray<CString, CString&> script;					//保存脚本
+	CMap<CString, LPCTSTR, CString, LPCTSTR> intvar_static;//脚本全局变量字典
+	CMap<CString,LPCTSTR, CString, LPCTSTR> intvar;//脚本临时变量字典
 	USERINFO user;						//帐号信息
 	CHARLIST charlist[2];				//人物列表
 	NPC_INFO npcinfo[STATIC_NPC_NUM];				//npc信息,包括人物动态信息
@@ -796,7 +812,7 @@ public:
 	DWORD nRecvTime;					//接收连接信息计时器
 	CHAROTHERINFO charotherinfo;		//人物的其它信息	
 	CAutil autil;
-	deque <TALKMESSAGE *> talkmessage;	//保存游戏中说话信息
+	CArray<TALKMESSAGE> talkmessage;	//保存游戏中说话信息
 	stack <int> IPStack;				//指令堆栈
 	BOOL IsOnLine;						//是否在线
 	BOOL IsLogin;						//人物是否正在登录中
@@ -870,10 +886,12 @@ public:
 	RECRUITBLOOD commonblood_pet;		//宠物平时精灵补血设置
 	PETRECRUITBLOOD petrecruitblood;		//宠物技能补血
 	BOOL bDeleteChar;				//重登时是否删除帐号
+	int	nCheckRideTime;				//检查战骑时间
 
 	void Init();
 	void Run(USERINFO *puser);
 	void RunScript();
+	void RunScriptByName(CString sc_path);
 	void SetExit(BOOL bexit);
 	void SetScriptExit(BOOL bexit);
 	int CheckUser(char * cdkey, char * pwd);
@@ -1050,5 +1068,6 @@ public:
 	BOOL CheckGameState(CString szPara);
 	BOOL CheckRelogin(CString szPara);
 	BOOL CheckBaiTaning(CString szPara);
+	BOOL CheckPetRightFight();
 };
 

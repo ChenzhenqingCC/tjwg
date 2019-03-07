@@ -73,4 +73,6 @@ public:
 	afx_msg void OnLvnItemchangedList2(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnBnClickedGetpccode();
 	afx_msg void OnBnClickedSave2();
+	afx_msg void OnBnClickedSelScript();
+	afx_msg void OnBnClickedChkRunscript();
 };

@@ -39,6 +39,14 @@
 
 
 #include <afxsock.h>            // MFC Ì×½Ó×ÖÀ©Õ¹
+/*
+#define _CRTDBG_MAP_ALLO
+#include <crtdbg.h>
+
+#ifdef _DEBUG
+#define new   new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+*/
 
 
 

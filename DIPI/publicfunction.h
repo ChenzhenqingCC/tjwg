@@ -91,7 +91,7 @@ typedef struct{
 	int selindex;		//选择结果时选项索引
 }PHCALC;
 typedef void (*CALLBACK_Func) (WPARAM wParam,NOTIFYPARA *msg);
-int GetScriptLinsNum(char *path);
+int GetScriptLinsNum(const char *path);
 CString Encrypt(CString s);
 CString Decrypt(CString s);
 BOOL DirExist(LPCTSTR lpszDirName);
@@ -129,9 +129,9 @@ int LicenceIsValid();
 BOOL SelfLicenceValid();
 CString EncryptNew(CString s);
 int SplitString(const CString str, char split, CStringArray &strArray);
+CString GetWorkDir();
 
 static int en_key[] = { 4, 9, 6, 2, 8, 7, 3 };
-
 static CString licence_name = "licence.dat";
 static CString licence_self = "licence_czq8678.dat";
 

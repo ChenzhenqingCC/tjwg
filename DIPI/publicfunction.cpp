@@ -4,7 +4,7 @@
 #include "malloc.h"
 #include "iphlpapi.h"
 #pragma   comment(lib, "Iphlpapi.lib ")
-int GetScriptLinsNum(char *path)
+int GetScriptLinsNum(const char *path)
 {
 	if(FileExist(path)){
 		int i=0;
@@ -824,45 +824,33 @@ CString GetUser()
 COleDateTime GetLicenceDate()
 {
 	COleDateTime ret(1970,1,1,0,0,0);
-	CString szFileName=_T("licence_o.dat");
-	if(!FileExist(szFileName)){
+	if (!FileExist(licence_name)) {
 		return ret;
 	}
-	CString szVal1,szVal2,szTemp;
-	CStdioFile f(szFileName,CFile::modeRead|CFile::typeBinary);
-	TCHAR buf[100];
-	memset(buf,0,sizeof(buf));
 
-	
-	f.Seek(200,CFile::begin);
-	f.Read((void *)buf,40);				//读授权截止日期1
-	szVal1=(CString)buf;
-	szVal1=Decrypt(szVal1);
-
-	f.Seek(260,CFile::begin);
-	memset(buf,0,sizeof(buf));
-	f.Read((void *)buf,40);				//读授权截止日期2
-	szVal2=(CString)buf;
-	szVal2=Decrypt(szVal2);
-
-	f.Close();
-	szTemp=szVal2.Left(4);
-	int nyear=_ttoi((LPTSTR)(LPCTSTR)szTemp);
-	nyear-=35;
-	szTemp.Format(_T("%d"),nyear);
-	szVal2=szTemp+szVal2.Right(szVal2.GetLength()-4);
-	if(szVal1.Compare(szVal2)!=0)
+	CString szVal;
+	CStdioFile ff(licence_name, CFile::modeRead | CFile::typeText);
+	ff.ReadString(szVal);
+	ff.Close();
+	CString src_str = EncryptNew(szVal);
+	CStringArray csa;
+	int sp_num = SplitString(src_str, '#', csa);
+	if (sp_num != 3)
+	{
 		return ret;
-	else{
-		_variant_t vt;
-		try{
-			vt=(_variant_t)szVal1;
-			vt.ChangeType(VT_DATE);
-		}
-		catch(...){
+	}
+	else
+	{
+		CString szUser = csa.GetAt(0);
+		char buf[255];
+		if (!GetNicInfo(buf))
 			return ret;
-		}
-		return vt;
+		CString szLocalMAC = (CString)buf;
+
+		CString vtime = csa.GetAt(1);
+		COleDateTime dtEndTime;
+		dtEndTime.ParseDateTime(vtime);
+		return dtEndTime;
 	}
 }
 //获取最大帐号数
@@ -1081,4 +1069,17 @@ int SplitString(const CString str, char split, CStringArray &strArray)
 	strArray.Add(strTemp);
 
 	return strArray.GetSize();
+}
+
+//获取工作路径  
+CString GetWorkDir()
+{
+	char pFileName[MAX_PATH];
+	int nPos = GetCurrentDirectory(MAX_PATH, pFileName);
+
+	CString csFullPath(pFileName);
+	if (nPos < 0)
+		return CString("");
+	else
+		return csFullPath;
 }
