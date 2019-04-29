@@ -48,6 +48,7 @@ public:
 	afx_msg void OnBnClickedStart();
 	BOOL SelectLine();
 	UINT TimerOn;
+	UINT GameTimerOn;
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	CStatic m_time;
 	void CallbackMsg(NOTIFYPARA *pNotifyPara);

@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "DIPI.h"
 #include "DIPIDlg.h"
+#include "tlhelp32.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -34,6 +35,38 @@ CDIPIApp::CDIPIApp()
 
 CDIPIApp theApp;
 
+int CDIPIApp::GetProcessCount(const TCHAR* szExeName)
+{
+	int count = 0;
+	try
+	{
+		TCHAR sztarget[MAX_PATH];
+		lstrcpy(sztarget, szExeName);
+		CharLowerBuff(sztarget, MAX_PATH);
+		PROCESSENTRY32 my;
+		HANDLE l = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+		if (((int)l) != -1)
+		{
+			my.dwSize = sizeof(my);
+			if (Process32First(l, &my))
+			{
+				do {
+					CharLowerBuff(my.szExeFile, MAX_PATH);
+					if (lstrcmp(sztarget, my.szExeFile) == 0) {
+						count++;
+					}
+				} while (Process32Next(l, &my));
+			}
+			CloseHandle(l);
+		}
+	}
+	catch (std::exception e)
+	{
+		//std::cout << e.what() << std::endl;
+	}	return count;
+}
+
+
 
 // CDIPIApp 初始化
 
@@ -57,14 +90,33 @@ BOOL CDIPIApp::InitInstance()
 	}
 	else
 	{
-		if (FindWindow(NULL, "公益脱机外挂") != NULL) {
-			MessageBox(NULL, "外挂只能运行一个程序实例!授权请与作者联系！", "提示信息", MB_ICONINFORMATION);
-			exit(0);
+		MAXACCOUNT = 5;
+		int gycout = GetProcessCount("DIPI.exe");
+		int max_account = LicenceIsValid();
+		LPWSTR s = GetCommandLineW();
+		bool is_crash = (strcmp((CString)s, "AUTORUN") == 0);
+		if (max_account <= 0)
+		{
+			MAXACCOUNT = 0;
+			if (gycout > 1)
+			{
+				MessageBox(NULL, "外挂多开超过数量!授权请与作者联系！", "提示信息", MB_ICONINFORMATION);
+				exit(0);
+			}
 		}
+		else
+		{
+			if (gycout > 0 && gycout > max_account / MAXACCOUNT && !is_crash)
+			{
+				MessageBox(NULL, "外挂多开超过数量!授权请与作者联系！", "提示信息", MB_ICONINFORMATION);
+				exit(0);
+			}
+		}
+		
 	}
+
 	
 
-	MAXACCOUNT = LicenceIsValid();
 	G_LICENCEDATE = GetLicenceDate();
 	//检测软件是否授权
 	if(MAXACCOUNT <= 0){		

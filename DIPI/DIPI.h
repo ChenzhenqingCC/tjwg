@@ -25,6 +25,7 @@ public:
 // ÷ÿ–¥
 public:
 	virtual BOOL InitInstance();
+	int GetProcessCount(const TCHAR* szExeName);
 
 //  µœ÷
 

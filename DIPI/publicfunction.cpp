@@ -25,7 +25,7 @@ CString EncryptNew(CString s)
 	CString v = "";
 	for (int i = 0; i < s.GetLength(); i++) {
 		TCHAR bTemp = (TCHAR)s.GetAt(i);
-		bTemp = (TCHAR)(bTemp ^ i);
+		bTemp = (TCHAR)(bTemp ^ 2);
 		v +=CString(bTemp);
 	}
 	return v;
