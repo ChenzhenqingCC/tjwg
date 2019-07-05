@@ -866,6 +866,7 @@ public:
 	double dFirstDelay;				//首次延迟
 	double dAttackDelay;			//攻击延迟
 	double dRMpByBlood;				//嗜血补气
+	char cCharTeamMember[10][128];		//队伍可加入名单列表 不在列表中会剔除 最多10人
 	char cCharFirstAction[50];		//人物首次动作
 	int cCharFirstNum;				//人物首次限制数量
 	char cCharAction[50];			//人物一般动作
@@ -876,9 +877,11 @@ public:
 	char cCapOnePetName[50];		//捉单个宠名称
 	int nCapPetNum;					//和捉宠名称配合使用，捉宠数量
 	int nCapPetBlood;				//捉宠血量
+	int nCapPetMaxBlood = 0;			//捉宠目标血量
 	int nCapCharUseSkill;			//捉宠时人物的技能和捉宠血量
 	int nCapPetSkill;				//捉宠时宠物使用的技能
 	int nPartyNum;					//队伍人数
+	BOOL bCharMemSet;				//是否设置了允许加入
 	BOOL bCapEscapeWhenNoPet;		//是否逃跑当没有要捕获的宠物时
 	RECRUITBLOOD recruitblood;		//人物战时精灵补血设置
 	RECRUITBLOOD commonblood;		//人物平时精灵补血设置
@@ -940,6 +943,7 @@ public:
 	int SendTalk(int x,int y,char *msg,int color,int area);
 	int SendSelectWindowButton(int x,int y,int seqno,int objindex,int select,char *data);
 
+	int SendKickMember(int no);
 	int SendChangeMap(int seqno,int x,int y,int dir=-1);
 	int SendAttackCommand(int round,char *enemy);
 	int SendDummy();
@@ -1054,6 +1058,7 @@ public:
 	BOOL CheckPetJob(int petid,CString szTest,int num,int jump,BOOL iscall);
 	BOOL CheckPetLV(int petid,CString szTest,int num,int jump,BOOL iscall);
 	BOOL CheckPetEXP(int petid,CString szTest,int num,int jump,BOOL iscall);
+	BOOL CheckPetMaxHP(int petid, CString szTest, int num, int jump, BOOL iscall);
 	BOOL CheckPetHP(int petid,CString szTest,int num,int jump,BOOL iscall);
 	BOOL CheckPetHPP(int petid,CString szTest,int num,int jump,BOOL iscall);
 	BOOL CheckPetAttack(int petid,CString szTest,int num,int jump,BOOL iscall);
