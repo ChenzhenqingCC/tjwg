@@ -198,6 +198,36 @@ void DbgLog ( LPCSTR lpszFormat, ... )
 	WriteDataToFile ( "log.txt", szLogBuf, strlen(szLogBuf), "ab+");
 	f_CSFor_DbgLog.Unlock ();
 }
+
+CCriticalSection f_CSFor_InfoLog;
+void InfoLog(LPCSTR lpszFormat, ...)
+{
+	// 格式化
+	f_CSFor_InfoLog.Lock();
+	char szLogBuf[1024 * 4] = { 0 };
+	char *p = szLogBuf;
+	*p = '[';
+	p++;
+	CString csDate = GetCurTimeString();
+	int nLen = csDate.GetLength();
+	strcpy_s(p, nLen + 1, (LPCSTR)csDate);
+	p += nLen;
+	*p = ']';
+	p++;
+	*p = ' ';
+	p++;
+
+	va_list  va;
+	va_start(va, lpszFormat);
+	nLen = sizeof(szLogBuf) / 2 - (int)(p - szLogBuf);
+	vsprintf_s(p, nLen, lpszFormat, va);
+	va_end(va);
+	//char buf[1024*4]={0};
+	//WideCharToMultiByte(CP_ACP,0,szLogBuf,-1,buf,sizeof(buf),NULL,NULL);
+	WriteDataToFile("info.txt", szLogBuf, strlen(szLogBuf), "ab+");
+	f_CSFor_InfoLog.Unlock();
+}
+
 /********************************************************************************
 * Function Type	:	Global
 * Parameter		:	filename		-	文件名

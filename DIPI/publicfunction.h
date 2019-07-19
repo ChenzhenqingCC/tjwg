@@ -98,6 +98,7 @@ CString Decrypt(CString s);
 BOOL DirExist(LPCTSTR lpszDirName);
 BOOL FileExist(LPCTSTR lpszFileName);
 void DbgLog( LPCTSTR lpszFormat, ... );
+void InfoLog(LPCTSTR lpszFormat, ...);
 int WriteDataToFile(LPCSTR filename,char * data,long size,LPCSTR mode, int nStartPos=-1 );
 CString GetCurTimeString ();
 int ConnectServer(SOCKET &rsocket,char *ip,int port);

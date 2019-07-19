@@ -867,6 +867,7 @@ public:
 	double dAttackDelay;			//攻击延迟
 	double dRMpByBlood;				//嗜血补气
 	char cCharTeamMember[10][128];		//队伍可加入名单列表 不在列表中会剔除 最多10人
+	DWORD cCharBattleTimeStamp;
 	char cCharFirstAction[50];		//人物首次动作
 	int cCharFirstNum;				//人物首次限制数量
 	char cCharAction[50];			//人物一般动作
